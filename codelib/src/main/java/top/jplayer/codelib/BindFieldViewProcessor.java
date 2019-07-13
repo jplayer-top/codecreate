@@ -9,11 +9,13 @@ import com.squareup.javapoet.TypeSpec;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
@@ -24,6 +26,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
+import javax.tools.JavaFileObject;
 
 /**
  * Created by Obl on 2019/7/13.
@@ -61,7 +64,7 @@ public class BindFieldViewProcessor extends AbstractProcessor {
 
             ClassName activity = ClassName.get("android.app", "Activity");
 
-            TypeSpec.Builder mainActivityBuilder = TypeSpec.classBuilder("MainActivity")
+            TypeSpec.Builder mainActivityBuilder = TypeSpec.classBuilder("Main111Activity")
                     .addModifiers(Modifier.PUBLIC)
                     .superclass(activity);
 
@@ -80,19 +83,16 @@ public class BindFieldViewProcessor extends AbstractProcessor {
                     .addModifiers(Modifier.PROTECTED)
                     .addParameter(savedInstanceState)
                     .addStatement("super.onCreate(savedInstanceState)")
-                    .addStatement("setContentView(R.layout.activity_main)")
+//                    .addStatement("setContentView(R.layout.activity_main)")
                     .build();
 
             TypeSpec mainActivity = mainActivityBuilder.addMethod(onCreate)
                     .build();
 
             JavaFile javaFile = JavaFile.builder("com.test", mainActivity).build();
-            File file = new File("codelib/src/main/java");
             try {
-                javaFile.writeTo(System.out);
-                javaFile.writeTo(file);
-                System.out.println(file.getAbsolutePath());
-                System.out.println(file.exists());
+                Filer filer = processingEnv.getFiler();
+                javaFile.writeTo(filer);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println(e.getMessage());
@@ -102,4 +102,5 @@ public class BindFieldViewProcessor extends AbstractProcessor {
         return true;
 
     }
+
 }
