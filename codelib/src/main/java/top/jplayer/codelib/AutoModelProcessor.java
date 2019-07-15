@@ -26,19 +26,19 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.SimpleElementVisitor7;
 
 /**
- * Created by Obl on 2019/7/13.
+ * Created by Obl on 2019/7/15.
  * top.jplayer.codelib
  * call me : jplayer_top@163.com
  * github : https://github.com/oblivion0001
  */
 @AutoService(Processor.class)
-public class BindFieldViewProcessor extends AbstractProcessor {
+public class AutoModelProcessor extends AbstractProcessor {
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> types = new LinkedHashSet<>();
         // 添加了关注的注解
-        types.add(BindFieldView.class.getCanonicalName());
+        types.add(AutoModel.class.getCanonicalName());
         return types;
     }
 
@@ -50,7 +50,7 @@ public class BindFieldViewProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-        Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(BindFieldView.class);
+        Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(AutoModel.class);
         for (Element element : elements) {
             PackageElement packageOf = processingEnv.getElementUtils().getPackageOf(element);
             System.out.println(packageOf);
@@ -68,16 +68,15 @@ public class BindFieldViewProcessor extends AbstractProcessor {
                 @Override
                 public Void visitExecutable(ExecutableElement executableElement, Void aVoid) {
                     System.out.println("=========================");
-                    BindFieldView bindAnnotation = executableElement.getAnnotation(BindFieldView.class);
-                    int id = bindAnnotation.id();
-                    System.out.println(id);
                     List<? extends VariableElement> parameters = executableElement.getParameters();
                     for (VariableElement parameter : parameters) {
-                        System.out.println("" + parameter.asType().toString() + "------" + parameter.getSimpleName());
+                        System.out.println(parameter.getSimpleName()+"---for");
+                        System.out.println(parameter.asType().toString());
                     }
-                    System.out.println("---" + executableElement.getReturnType());
-                    System.out.println("---" + executableElement.getSimpleName());
-                    System.out.println("---" + executableElement.getModifiers());
+                    System.out.println(executableElement);
+                    System.out.println(executableElement.getReturnType());
+                    System.out.println(executableElement.getSimpleName());
+                    System.out.println(executableElement.getModifiers());
                     System.out.println("=========================");
                     return super.visitExecutable(executableElement, aVoid);
                 }
@@ -90,9 +89,10 @@ public class BindFieldViewProcessor extends AbstractProcessor {
 
             }, null);
 
+
             ClassName activity = ClassName.get("android.app", "Activity");
 
-            TypeSpec.Builder mainActivityBuilder = TypeSpec.classBuilder("Main111Activity")
+            TypeSpec.Builder mainActivityBuilder = TypeSpec.classBuilder("MainActivity")
                     .addModifiers(Modifier.PUBLIC)
                     .superclass(activity);
 
