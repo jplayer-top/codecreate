@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  */
 
 @Retention(RetentionPolicy.CLASS)
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 public @interface BindFieldView {
     int id();
 }
